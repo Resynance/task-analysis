@@ -15,6 +15,9 @@ These pages describe **what the application does** and where behavior lives in t
 | [Analytics & reports](./analytics-and-llm-reports.md) | Metrics dashboards, coaching insights, pruned analysis, combined reports, dataset QA |
 | [Special projects & exports](./special-projects-and-exports.md) | Trace-export tooling, writer pre-check, transcript-based failure reports |
 | [Configuration & data](./configuration-and-data.md) | Guidelines, ingest, LLM settings, env vars, OpenRouter audit log, **empty `projects/` in clone and what to add locally** for special projects, public-repo hygiene |
+| [Operations: subprocesses & limits](./operations-subprocesses.md) | Special-project subprocesses, NDJSON streaming, timeouts, path validation (`harPath`, etc.) |
+| [Postgres migration (optional)](./postgres-migration.md) | When to leave SQLite and how Prisma supports Postgres |
+| [Observability & UX limits](./observability-and-ux-limits.md) | Structured logs, optional Sentry/OpenTelemetry, pagination/virtualization as data grows |
 
 ## Contributing to docs
 

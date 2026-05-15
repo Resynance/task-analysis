@@ -54,18 +54,22 @@ export function InsightsPanel(props: {
   const [additionalContext, setAdditionalContext] = useState("");
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- sync server-rendered props into local state */
     setReport(props.initialReport);
     setSummary(props.initialSummary);
     setSavedAtIso(props.savedAtIso);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [props.initialReport, props.initialSummary, props.savedAtIso]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset notice when scope changes
     setBatchNotice(null);
   }, [props.projectFilter, props.envFilter, props.guidelineFilterIds]);
 
   useEffect(() => {
     try {
       const s = sessionStorage.getItem(COACHING_EXTRA_CONTEXT_STORAGE_KEY);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate persisted draft once on mount
       if (s) setAdditionalContext(s);
     } catch {
       /* ignore */

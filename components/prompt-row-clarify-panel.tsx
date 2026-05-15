@@ -27,6 +27,7 @@ export function PromptRowClarifyPanel(props: {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync clarification from refreshed row props
     setSaved(analysisClarification ?? null);
   }, [analysisClarification]);
 

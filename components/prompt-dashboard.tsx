@@ -163,10 +163,12 @@ export function PromptDashboard(props: {
   const batchAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep draft in sync with URL-driven query
     setAuthorSearchDraft(props.authorSearchQuery);
   }, [props.authorSearchQuery]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep draft in sync with URL-driven query
     setPromptSearchDraft(props.promptSearchQuery);
   }, [props.promptSearchQuery]);
 

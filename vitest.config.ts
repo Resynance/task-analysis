@@ -13,8 +13,10 @@ export default defineConfig({
     },
   },
   test: {
+    /** Shared SQLite file for route tests that use Prisma — avoids cross-file races. */
+    fileParallelism: false,
     environment: "jsdom",
-    setupFiles: ["./vitest.setup.ts"],
+    setupFiles: ["./vitest.env.ts", "./vitest.setup.ts"],
     include: ["**/*.{test,spec}.{ts,tsx}"],
     exclude: [
       "node_modules",
@@ -23,6 +25,7 @@ export default defineConfig({
       "build",
       "generated",
       "projects/**",
+      "e2e/**",
     ],
     coverage: {
       provider: "v8",

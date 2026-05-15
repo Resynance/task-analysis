@@ -63,6 +63,7 @@ export function PrunedAnalysisPanel(props: {
     [props.scopeRows, projectFilter],
   );
 
+  /* eslint-disable react-hooks/set-state-in-effect -- URL search params drive filter state */
   useEffect(() => {
     const spObj = Object.fromEntries(searchParams.entries()) as Record<
       string,
@@ -141,6 +142,7 @@ export function PrunedAnalysisPanel(props: {
     setEnvironment(nextEnv);
     setSelectedGuidelineIds(nextGuidelines);
   }, [searchParams, props.scopeRows, props.guidelines, router, projectChoices]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const guidelineScopeLabel =
     props.guidelines.length === 0
@@ -205,6 +207,7 @@ export function PrunedAnalysisPanel(props: {
     });
   }
 
+  /* eslint-disable react-hooks/set-state-in-effect -- clear stale report before fetching latest for new scope */
   useEffect(() => {
     if (!environment || projectFilter === "all") return;
     const params = new URLSearchParams();
@@ -225,6 +228,7 @@ export function PrunedAnalysisPanel(props: {
       })
       .finally(() => setLoadingSaved(false));
   }, [environment, guidelineScopeKey, projectFilter]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   function applyGuidelineFilter(nextIds: string[]) {
     const allIds = props.guidelines.map((g) => g.id);

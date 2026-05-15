@@ -59,7 +59,7 @@ export default async function ReportsInsightsPage({
     const qs = p.toString();
     redirect(qs ? `/reports/insights?${qs}` : "/reports/insights");
   }
-  let projectFilter: ProjectFilter = requestedProject;
+  const projectFilter: ProjectFilter = requestedProject;
 
   if (projectFilter === "all") {
     const firstConcrete = projectFilterOptions.find((e) => e !== "all");

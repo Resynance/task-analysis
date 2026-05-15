@@ -65,6 +65,7 @@ export function OpenclawAuditReportViewer(props: { refreshToken?: number }) {
   }, [applyList]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- loadList updates loading/list state asynchronously
     void loadList();
   }, [loadList, props.refreshToken]);
 

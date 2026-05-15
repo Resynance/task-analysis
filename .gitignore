@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+vitest.sqlite
+vitest.sqlite-journal
+ci.sqlite
+ci.sqlite-journal
 
 # next.js
 /.next/

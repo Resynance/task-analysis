@@ -35,6 +35,7 @@ export function MentorshipAddMemberForm(props: {
       selectedKey &&
       !filtered.some((u) => u.key === selectedKey)
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clear stale selection when filter narrows
       setSelectedKey("");
     }
   }, [filtered, selectedKey]);

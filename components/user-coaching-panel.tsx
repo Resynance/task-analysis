@@ -141,6 +141,7 @@ export function UserCoachingPanel(props: {
   );
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- hydrate from server saved row or clear */
     if (!initialSavedPayload) {
       setResult(null);
       setSavedMeta(null);
@@ -153,6 +154,7 @@ export function UserCoachingPanel(props: {
         initialSavedRowUpdatedAtIso,
       ),
     );
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [initialSavedPayload, initialSavedRowUpdatedAtIso]);
 
   const scopeLabel =
@@ -240,7 +242,17 @@ export function UserCoachingPanel(props: {
     } finally {
       setLoading(false);
     }
-  }, [userKeyCanonical, env, records, additionalContext, router]);
+  }, [
+    userKeyCanonical,
+    env,
+    records,
+    additionalContext,
+    router,
+    setLoading,
+    setError,
+    setResult,
+    setSavedMeta,
+  ]);
 
   function exportCoachingPdfReport() {
     if (!result || !savedMeta) return;

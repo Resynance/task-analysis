@@ -6,6 +6,8 @@ Local-first **Next.js** app for reviewing imported training **prompts** and **fe
 
 Functional documentation (features, architecture, configuration) lives in **[`docs/`](./docs/README.md)**. Start with the docs index, then jump to the area you care about.
 
+Contributor setup (tests, DB, CI parity, pre-push checks) is in **[`CONTRIBUTING.md`](./CONTRIBUTING.md)**. Security disclosure: **[`SECURITY.md`](./SECURITY.md)**.
+
 ## Quick start
 
 ```bash
@@ -16,14 +18,17 @@ npx prisma db push
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (dev server listens on loopback by default; use `npm run dev:lan` for `0.0.0.0`).
 
 ## Scripts
 
 | Command | Purpose |
 |---------|--------|
-| `npm run dev` | Next.js dev server |
-| `npm run build` / `npm start` | Production build and server |
+| `npm run dev` | Next.js dev server (127.0.0.1) |
+| `npm run dev:lan` | Dev server on 0.0.0.0 (LAN-friendly) |
+| `npm run build` / `npm start` | Production build and server (127.0.0.1) |
+| `npm run start:lan` | Production server on 0.0.0.0 |
+| `npm run test:e2e` | Playwright smoke tests (`e2e/`) |
 | `npm run lint` | ESLint |
 | `npm run test:run` | Vitest (non-watch) |
 | `npm run test:coverage` | Vitest with coverage |

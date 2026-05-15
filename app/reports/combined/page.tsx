@@ -20,7 +20,6 @@ import {
   projectFilterInList,
   projectFilterToDbKey,
   serializeProjectQueryValue,
-  type ProjectFilter,
 } from "@/lib/task-project";
 import { redirect } from "next/navigation";
 
@@ -42,7 +41,7 @@ export default async function CombinedReportsPage({
   ]);
 
   const projectFilterOptions = buildProjectFilterOptionsFromRows(scopeRows);
-  let projectFilter = parseProjectFilter(sp);
+  const projectFilter = parseProjectFilter(sp);
   if (
     projectFilter !== "all" &&
     !projectFilterInList(projectFilterOptions, projectFilter)

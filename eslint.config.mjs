@@ -13,6 +13,8 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "coverage/**",
+    // Local-only special-project exports and generated scripts (not in clean clone; noisy for lint).
+    "projects/**",
   ]),
 ]);
 
