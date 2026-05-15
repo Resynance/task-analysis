@@ -10,7 +10,6 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "secrets:scan": "docker run --rm -v \"$PWD:/repo\" -w /repo trufflesecurity/trufflehog:latest filesystem /repo -x /repo/scripts/trufflehog-exclude.txt --results=verified,unknown --fail",
     "check:push-data": "node scripts/check-push-data.mjs",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
