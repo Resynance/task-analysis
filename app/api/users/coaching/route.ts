@@ -223,7 +223,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "No records remain after excluding escalated tasks (fleet review, flagged bugged, cannot grade, or escalated metadata). Broaden filters or wait for non-escalated work in scope.",
+            "No records remain after excluding escalated tasks (platform or QA escalation review, flagged bugged, cannot grade, or escalated metadata). Broaden filters or wait for non-escalated work in scope.",
         },
         { status: 400 },
       );

@@ -33,7 +33,7 @@ export function getOpenclawAuditScriptPath(): string {
   return path.join(getOpenclawTraceExportsDir(), "audit_trace_workflow_steps.py");
 }
 
-/** Markdown audit reports (fleet-audit/openclaw-compatible layout). */
+/** Markdown audit reports (OpenClaw trace layout). */
 export function getOpenclawAuditReportsDir(): string {
   return path.join(getOpenclawTraceExportsDir(), "reports");
 }

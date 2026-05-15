@@ -43,7 +43,7 @@ const bodySchema = z
     startDate: z.string().optional(),
     cutoffMode: cutoffModeSchema.optional(),
     lifecycle: z.string().optional(),
-    deriveFleetHeaders: z.boolean().optional(),
+    derivePortalHeaders: z.boolean().optional(),
     nextAction: z.string().optional(),
     nextRouterStateTree: z.string().optional(),
     deploymentId: z.string().optional(),
@@ -185,10 +185,10 @@ export async function POST(request: Request) {
         if (routerTreeFile) {
           delete workflowEnv.OPENCLAW_NEXT_ROUTER_STATE_TREE;
         }
-        if (body.deriveFleetHeaders !== false) {
-          workflowEnv.OPENCLAW_DERIVE_FLEET_HEADERS = "1";
+        if (body.derivePortalHeaders !== false) {
+          workflowEnv.OPENCLAW_DERIVE_PORTAL_HEADERS = "1";
         } else {
-          delete workflowEnv.OPENCLAW_DERIVE_FLEET_HEADERS;
+          delete workflowEnv.OPENCLAW_DERIVE_PORTAL_HEADERS;
         }
         if (body.userAgent?.trim()) {
           workflowEnv.OPENCLAW_USER_AGENT = body.userAgent.trim();
@@ -350,8 +350,8 @@ export async function POST(request: Request) {
         if (body.harPath?.trim()) {
           workflowArgs.push("--from-har", path.resolve(body.harPath.trim()));
         }
-        if (body.deriveFleetHeaders !== false) {
-          workflowArgs.push("--derive-fleet-headers");
+        if (body.derivePortalHeaders !== false) {
+          workflowArgs.push("--derive-portal-headers");
         }
         if (body.nextAction?.trim()) {
           workflowArgs.push("--next-action", body.nextAction.trim());

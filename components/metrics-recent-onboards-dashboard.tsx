@@ -207,7 +207,7 @@ export function MetricsRecentOnboardsDashboard({
           Could not find <code className="text-zinc-300">users/users_recent_joins.json</code>.
           Run{" "}
           <code className="text-zinc-300">
-            scripts/fleet_user_export/fetch_all_users.py --recent-joins
+            scripts/user_export/fetch_all_users.py --recent-joins
           </code>{" "}
           to generate it.
         </p>
@@ -228,8 +228,8 @@ export function MetricsRecentOnboardsDashboard({
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-zinc-500">
           Users from <code className="text-zinc-300">users/users_recent_joins.json</code>.
-          Internal <code className="text-zinc-300">@fleet.so</code> accounts and recent
-          users with QA permissions are excluded by the export script.
+          Accounts matching <code className="text-zinc-300">EXPORT_EXCLUDED_EMAIL_SUFFIX</code>{" "}
+          (when set) and recent users with QA permissions are excluded by the export script.
         </p>
         <p className="mt-2 text-xs text-zinc-600">
           Source run: {dateLabel(metrics.runTimeIso)} · Join window:{" "}

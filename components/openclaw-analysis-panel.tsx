@@ -329,8 +329,7 @@ export function OpenclawAnalysisPanel(props: {
           <code className="rounded bg-zinc-900 px-1 text-zinc-300">
             workflow-steps-by-task/*_workflow_steps.json
           </code>{" "}
-          file the same way as{" "}
-          <code className="text-zinc-400">fleet-audit/openclaw/audit.py</code>: guidelines
+          file the same way as the standalone OpenClaw audit script: guidelines
           plus world reference text vs recorded step outputs (OpenRouter). Markdown reports
           go to{" "}
           <code className="rounded bg-zinc-900 px-1 text-zinc-300">

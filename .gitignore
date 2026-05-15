@@ -57,6 +57,6 @@ next-env.d.ts
 /projects/**
 !/projects/.gitkeep
 
-# Repo-root `users/` — local Fleet user exports and tokens (not `app/users` routes).
+# Repo-root `users/` — local user exports and tokens (not `app/users` routes).
 /users/**
 !/users/.gitkeep

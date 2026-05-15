@@ -1,5 +1,5 @@
 /**
- * Detects records tied to escalated QA / fleet workflow so they are excluded from
+ * Detects records tied to escalated QA workflows so they are excluded from
  * user-level coaching (we do not want the model to learn from that slice).
  */
 

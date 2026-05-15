@@ -288,7 +288,7 @@ export default async function RecentOnboardsReportPage({
         <section className="report-section rounded-2xl border border-zinc-800 bg-zinc-950/35 p-6">
           <p className="text-zinc-500">
             Could not find <code>users/users_recent_joins.json</code>. Run{" "}
-            <code>scripts/fleet_user_export/fetch_all_users.py --recent-joins</code> first.
+            <code>scripts/user_export/fetch_all_users.py --recent-joins</code> first.
           </p>
         </section>
       ) : users.length === 0 ? (

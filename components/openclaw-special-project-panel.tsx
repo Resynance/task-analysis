@@ -73,7 +73,7 @@ export function OpenclawSpecialProjectPanel(props: {
   const [lifecycle, setLifecycle] = useState(() =>
     loadStored("lifecycle", "any"),
   );
-  const [deriveFleetHeaders, setDeriveFleetHeaders] = useState(true);
+  const [derivePortalHeaders, setDerivePortalHeaders] = useState(true);
   const [nextAction, setNextAction] = useState("");
   const [nextRouterStateTree, setNextRouterStateTree] = useState("");
   const [deploymentId, setDeploymentId] = useState("");
@@ -226,7 +226,7 @@ export function OpenclawSpecialProjectPanel(props: {
           startDate: startDate.trim() || undefined,
           cutoffMode: startDate.trim() ? cutoffMode : undefined,
           lifecycle: lifecycle.trim() || undefined,
-          deriveFleetHeaders,
+          derivePortalHeaders,
           nextAction: nextAction.trim() || undefined,
           nextRouterStateTree: nextRouterStateTree.trim() || undefined,
           deploymentId: deploymentId.trim() || undefined,
@@ -602,7 +602,7 @@ export function OpenclawSpecialProjectPanel(props: {
 
       <details className={detailsClass}>
         <summary className="px-4 py-3">
-          Advanced: workflow HAR, portal origin, Fleet headers
+          Advanced: workflow HAR, portal origin, request headers
         </summary>
         <div className="space-y-4 border-t border-zinc-800/80 px-4 py-4">
           <p className="text-xs text-zinc-500">
@@ -625,11 +625,11 @@ export function OpenclawSpecialProjectPanel(props: {
           <label className="flex items-center gap-2 text-sm text-zinc-300">
             <input
               type="checkbox"
-              checked={deriveFleetHeaders}
-              onChange={(e) => setDeriveFleetHeaders(e.target.checked)}
+              checked={derivePortalHeaders}
+              onChange={(e) => setDerivePortalHeaders(e.target.checked)}
               className="size-4 rounded border-zinc-600 bg-zinc-950"
             />
-            Derive fleet headers (per-task router tree)
+            Derive portal headers (per-task router tree)
           </label>
           <label className="block text-sm text-zinc-300">
             Delay between workflow POSTs (seconds)
@@ -647,7 +647,7 @@ export function OpenclawSpecialProjectPanel(props: {
             <input
               value={portalBaseUrl}
               onChange={(e) => setPortalBaseUrl(e.target.value)}
-              placeholder="https://fleetai.com"
+              placeholder="https://app.example.com"
               className={inputClass}
             />
           </label>
