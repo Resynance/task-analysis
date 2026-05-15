@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Analysis
 
-## Getting Started
+Local-first **Next.js** app for reviewing imported training **prompts** and **feedback**, scoring them with an LLM against **guidelines**, and running reporting workflows (metrics, coaching insights, special-project exports).
 
-First, run the development server:
+## Documentation
+
+Functional documentation (features, architecture, configuration) lives in **[`docs/`](./docs/README.md)**. Start with the docs index, then jump to the area you care about.
+
+## Quick start
 
 ```bash
+npm install
+cp .env.example .env
+# Edit .env: set DATABASE_URL and, for OpenRouter, OPENROUTER_API_KEY
+npx prisma db push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Purpose |
+|---------|--------|
+| `npm run dev` | Next.js dev server |
+| `npm run build` / `npm start` | Production build and server |
+| `npm run lint` | ESLint |
+| `npm run test:run` | Vitest (non-watch) |
+| `npm run test:coverage` | Vitest with coverage |
+| `npm run check:push-data` | Block accidental commit of sensitive paths (see `scripts/check-push-data.mjs`) |
 
-## Learn More
+## Learn more (framework)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is built with [Next.js](https://nextjs.org). For App Router patterns, see the [Next.js documentation](https://nextjs.org/docs).

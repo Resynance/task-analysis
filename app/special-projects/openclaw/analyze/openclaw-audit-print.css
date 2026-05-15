@@ -1,0 +1,25 @@
+/* Print / Save as PDF: only the report preview is visible */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #openclaw-report-print,
+  #openclaw-report-print * {
+    visibility: visible;
+  }
+  #openclaw-report-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    border: none;
+    background: white;
+    color: black;
+  }
+  #openclaw-report-print a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

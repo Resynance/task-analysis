@@ -1,0 +1,205 @@
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum PromptScore {
+  EXCELLENT
+  AVERAGE
+  POOR
+  // Listed in env pruned JSON; not rubric-scored by LLM; excluded from /insights corpus.
+  PRUNED
+}
+
+/// Single-row app configuration for the LLM client (id = "default").
+model LlmSettings {
+  id     String @id
+  /// "openrouter" | "lmstudio" | "remote_api"
+  provider String
+
+  openrouterBaseUrl     String?
+  openrouterModel       String?
+  /// If null, `OPENROUTER_API_KEY` from the environment is used.
+  openrouterApiKey      String?
+  lmstudioBaseUrl       String?
+  lmstudioModel         String?
+  /// OpenAI-compatible base URL (e.g. https://api.openai.com/v1).
+  remoteApiBaseUrl String?
+  remoteApiModel   String?
+  /// If null, `REMOTE_API_KEY` or `OPENAI_API_KEY` from the environment is used.
+  remoteApiKey     String?
+  openrouterHttpReferer String?
+  openrouterAppTitle    String?
+
+  updatedAt DateTime @updatedAt
+}
+
+/// One row per successful OpenRouter chat completion (in-app LLM calls); LM Studio calls are not logged.
+model OpenRouterApiAuditLog {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  /// Stable caller label (e.g. `analyze-prompt`, `coaching-insights`).
+  source           String
+  /// Model id sent to the API (e.g. `openai/gpt-4o-mini`).
+  model            String
+  promptTokens     Int?
+  completionTokens Int?
+  totalTokens      Int?
+  /// OpenRouter-reported charge in USD when present on `usage.cost`.
+  costUsd          Float?
+  /// Upstream completion id when returned by the API.
+  completionId     String?
+
+  @@index([createdAt])
+}
+
+model Guideline {
+  id        String   @id @default(cuid())
+  name      String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  prompts   Prompt[]
+  feedback  Feedback[]
+}
+
+/// Cached structured coaching report per project + environment + rubric scope (upsert on generate).
+model CoachingInsight {
+  id                  String   @id @default(cuid())
+  /// Source JSON basename slug (e.g. tryouts) or "" for prompts without a project / legacy rows.
+  projectKey          String   @default("")
+  /// `serializeEnvQueryValue` for the selected environment (never "all").
+  envKey              String
+  /// Sorted comma-separated guideline ids, or "all" when no rubric subset.
+  guidelineScopeKey   String   @default("all")
+  reportJson          Json
+  summary             String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([projectKey, envKey, guidelineScopeKey])
+}
+
+/// Cached pruned-task analysis per project + environment + rubric scope (upsert on generate).
+model PrunedTaskAnalysis {
+  id                String   @id @default(cuid())
+  /// Source JSON basename slug or "" for legacy.
+  projectKey        String   @default("")
+  /// `serializeEnvQueryValue` for selected environment.
+  envKey            String
+  /// Sorted comma-separated guideline ids, or "all" when no rubric subset.
+  guidelineScopeKey String   @default("all")
+  reportJson        Json
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([projectKey, envKey, guidelineScopeKey])
+}
+
+/// Latest per-user coaching report from /users/[userKey] (upsert on each successful generate).
+model UserCoachingInsight {
+  /// Canonical `formatUserKey` value, e.g. `id:…`, `email:…`.
+  userKey    String   @id
+  reportJson Json
+  updatedAt  DateTime @updatedAt
+}
+
+model Prompt {
+  id            String       @id @default(cuid())
+  body          String
+  guidelineId   String
+  guideline     Guideline    @relation(fields: [guidelineId], references: [id], onDelete: Restrict)
+  score         PromptScore?
+  rationale     String?
+  analyzedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  /// Stable id from `Prompts/prompts.json` root `id` (used for idempotent imports)
+  sourceId      String?      @unique
+  sourceKey     String?
+  /// Basename of the imported JSON file (e.g. tryouts from tryouts.json); "" if unknown / legacy.
+  projectKey    String   @default("")
+  envKey        String?
+  versionNo     Int?
+  taskModality  String?
+  sourceCreated DateTime?
+  /// Trimmed snapshot for filters / UI (large fields like verifier_code omitted)
+  extra         Json?
+  /// Latest operator Q&A about the saved score/rationale (`{ question, answer, updatedAt }`).
+  analysisClarification Json?
+
+  @@index([sourceKey])
+  @@index([projectKey])
+  @@index([envKey])
+}
+
+enum PodMemberRole {
+  MENTOR
+  MENTEE
+}
+
+/// Named mentorship group with mentors and mentees (user keys match `/users` directory).
+model MentorshipPod {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  members     PodMembership[]
+}
+
+model PodMembership {
+  id        String          @id @default(cuid())
+  podId     String
+  pod       MentorshipPod   @relation(fields: [podId], references: [id], onDelete: Cascade)
+  /// Canonical user key: `id:…`, `email:…`, `name:…`, or `unknown`
+  userKey   String
+  role      PodMemberRole
+
+  @@unique([podId, userKey])
+  @@index([podId])
+}
+
+/// Saved world reference text for OpenClaw special-project audits (LLM vs workflow steps).
+model OpenclawWorld {
+  id        String   @id @default(cuid())
+  /// Short label shown in selectors (e.g. persona / target name).
+  name      String
+  /// Full world spec text passed to the audit model.
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([updatedAt])
+}
+
+model Feedback {
+  id               String      @id @default(cuid())
+  body             String
+  guidelineId      String?
+  guideline        Guideline?  @relation(fields: [guidelineId], references: [id], onDelete: SetNull)
+  score            PromptScore?
+  rationale        String?
+  analyzedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  sourceFeedbackId String      @unique
+  taskId           String?
+  taskKey          String?
+  /// Folder slug when CSV lives under `feedback/<project>/`; empty for top-level `feedback/*.csv`.
+  projectKey       String   @default("")
+  envKey           String?
+  createdById      String?
+  createdByName    String?
+  createdByEmail   String?
+  sourceCreated    DateTime?
+  extra            Json?
+
+  @@index([projectKey])
+  @@index([envKey])
+  @@index([taskKey])
+}

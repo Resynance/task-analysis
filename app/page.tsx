@@ -1,65 +1,190 @@
-import Image from "next/image";
+import { PromptDashboard } from "@/components/prompt-dashboard";
+import { parseAuthorSearchQuery } from "@/lib/explore/filter-by-user";
+import { parsePromptBodySearchQuery } from "@/lib/prompt-body-search";
+import {
+  filterGuidelinesForUi,
+  findDatasetImportedTasksGuidelineId,
+} from "@/lib/guideline-scope";
+import { parseGuidelineIdsParam } from "@/lib/guideline-query";
+import {
+  buildPromptLibraryPage,
+  fetchPromptLibraryMeta,
+  scopePromptLibraryMetaForToolbar,
+} from "@/lib/prompt-library-page";
+import { loadUserDisplayNames } from "@/lib/users-lookup";
+import { parseLibraryPaginationParams } from "@/lib/library-pagination";
+import { prisma } from "@/lib/prisma";
+import { parseSortParams } from "@/lib/sort-prompts";
+import {
+  buildEnvFilterOptionsFromRows,
+  envFilterInList,
+  parseEnvFilter,
+  type EnvFilter,
+} from "@/lib/task-environment";
+import {
+  collectAllowedLifecycleValues,
+  lifecycleFilterIsValid,
+  parseTaskLifecycleFilter,
+  TASK_LIFECYCLE_ALL,
+  type TaskLifecycleFilter,
+} from "@/lib/task-lifecycle-filter";
+import {
+  buildProjectFilterOptionsFromRows,
+  parseProjectFilter,
+  projectFilterInList,
+  type ProjectFilter,
+} from "@/lib/task-project";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const { sort, order } = parseSortParams(sp);
+  const authorSearchQuery = parseAuthorSearchQuery(sp);
+  const promptSearchQuery = parsePromptBodySearchQuery(sp);
+  const groupByUser = typeof sp.groupBy === "string" && sp.groupBy === "user";
+  const { page: libraryPage, perPage: libraryPerPage } =
+    parseLibraryPaginationParams(sp);
+
+  const [guidelines, meta] = await Promise.all([
+    prisma.guideline.findMany({
+      orderBy: { updatedAt: "desc" },
+      select: { id: true, name: true },
+    }),
+    fetchPromptLibraryMeta(prisma),
+  ]);
+
+  const validGuidelineIds = new Set(guidelines.map((g) => g.id));
+  const guidelineFilterIds = parseGuidelineIdsParam(sp, validGuidelineIds);
+
+  const requestedProject = parseProjectFilter(sp);
+  const projectFilterOptions = buildProjectFilterOptionsFromRows(meta);
+  if (
+    requestedProject !== "all" &&
+    !projectFilterInList(projectFilterOptions, requestedProject)
+  ) {
+    const p = new URLSearchParams();
+    for (const [key, val] of Object.entries(sp)) {
+      if (key === "project") continue;
+      if (typeof val === "string") p.set(key, val);
+      else if (Array.isArray(val)) {
+        for (const v of val) {
+          if (typeof v === "string") p.append(key, v);
+        }
+      }
+    }
+    const qs = p.toString();
+    redirect(qs ? `/?${qs}` : "/");
+  }
+  const projectFilter: ProjectFilter = requestedProject;
+
+  const requestedEnv = parseEnvFilter(sp);
+  const envFilterOptions = buildEnvFilterOptionsFromRows(meta, projectFilter);
+  if (requestedEnv !== "all" && !envFilterInList(envFilterOptions, requestedEnv)) {
+    const p = new URLSearchParams();
+    for (const [key, val] of Object.entries(sp)) {
+      if (key === "env") continue;
+      if (typeof val === "string") p.set(key, val);
+      else if (Array.isArray(val)) {
+        for (const v of val) {
+          if (typeof v === "string") p.append(key, v);
+        }
+      }
+    }
+    const qs = p.toString();
+    redirect(qs ? `/?${qs}` : "/");
+  }
+  const envFilter: EnvFilter = requestedEnv;
+
+  const datasetImportedGuidelineId =
+    findDatasetImportedTasksGuidelineId(guidelines);
+
+  const scopedForLifecycleToolbar = scopePromptLibraryMetaForToolbar(
+    meta,
+    projectFilter,
+    envFilter,
+    guidelineFilterIds,
+    datasetImportedGuidelineId,
+  );
+  const allowedLifecycleFilters =
+    collectAllowedLifecycleValues(scopedForLifecycleToolbar);
+
+  const hasExplicitTaskStatus =
+    typeof sp.taskStatus === "string" && sp.taskStatus.trim() !== "";
+
+  let taskLifecycleFilter: TaskLifecycleFilter = parseTaskLifecycleFilter(sp);
+
+  if (!hasExplicitTaskStatus) {
+    taskLifecycleFilter = lifecycleFilterIsValid(
+      "production",
+      allowedLifecycleFilters,
+    )
+      ? "production"
+      : TASK_LIFECYCLE_ALL;
+  }
+
+  if (!lifecycleFilterIsValid(taskLifecycleFilter, allowedLifecycleFilters)) {
+    const p = new URLSearchParams();
+    for (const [key, val] of Object.entries(sp)) {
+      if (key === "taskStatus") continue;
+      if (typeof val === "string") p.set(key, val);
+      else if (Array.isArray(val)) {
+        for (const v of val) {
+          if (typeof v === "string") p.append(key, v);
+        }
+      }
+    }
+    const qs = p.toString();
+    redirect(qs ? `/?${qs}` : "/");
+  }
+  const guidelinesForUi = filterGuidelinesForUi(guidelines);
+
+  const nameByUserId = loadUserDisplayNames();
+
+  const library = await buildPromptLibraryPage({
+    prisma,
+    meta,
+    projectFilter,
+    envFilter,
+    guidelineFilterIds,
+    datasetImportedGuidelineId,
+    taskLifecycleFilter,
+    authorSearchQuery,
+    promptSearchQuery,
+    sort,
+    order,
+    page: libraryPage,
+    perPage: libraryPerPage,
+    nameByUserId,
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <PromptDashboard
+      prompts={library.prompts}
+      guidelines={guidelinesForUi}
+      sort={sort}
+      order={order}
+      projectFilter={projectFilter}
+      projectFilterOptions={library.projectFilterOptions}
+      envFilter={envFilter}
+      envFilterOptions={library.envFilterOptions}
+      guidelineFilterIds={guidelineFilterIds}
+      groupByUser={groupByUser}
+      authorSearchQuery={authorSearchQuery}
+      promptSearchQuery={promptSearchQuery}
+      libraryPage={library.page}
+      libraryPerPage={library.perPage}
+      libraryTotalFiltered={library.totalFiltered}
+      libraryTotalPages={library.totalPages}
+      scoredInScope={library.scoredInScope}
+      pendingInScope={library.pendingInScope}
+      taskLifecycleFilter={taskLifecycleFilter}
+      lifecycleFilterOptions={library.lifecycleFilterOptions}
+    />
   );
 }

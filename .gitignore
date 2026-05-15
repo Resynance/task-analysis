@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# SQLite (local Prisma dev DB; never publish)
+*.db
+*.db-journal
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -39,3 +43,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma generated client (created by `prisma generate` / postinstall)
+/generated
+
+# Local JSON dataset exports (ingest reads these; do not commit user data)
+/prompts/**
+!/prompts/.gitkeep
+/Prompts/**
+!/Prompts/.gitkeep
+
+# Entire `projects/` tree — local special-project exports, scripts, and paths (not for public clone).
+/projects/**
+!/projects/.gitkeep
