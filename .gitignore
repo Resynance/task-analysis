@@ -24,6 +24,11 @@
 .DS_Store
 *.pem
 
+# Local task-writer PDFs and session scratch (never commit)
+/PM_Task_Writer_Guide_v1.pdf
+/OpenClaw_Task_Writer_Guide_v3_3.pdf
+.fleet_cookie_temp_do_not_commit
+
 # SQLite (local Prisma dev DB; never publish)
 *.db
 *.db-journal
