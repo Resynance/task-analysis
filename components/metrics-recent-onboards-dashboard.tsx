@@ -205,7 +205,10 @@ export function MetricsRecentOnboardsDashboard({
         </h2>
         <p className="mt-3 text-sm">
           Could not find <code className="text-zinc-300">users/users_recent_joins.json</code>.
-          Run <code className="text-zinc-300">users/fetch_all_users.py --recent-joins</code>{" "}
+          Run{" "}
+          <code className="text-zinc-300">
+            scripts/fleet_user_export/fetch_all_users.py --recent-joins
+          </code>{" "}
           to generate it.
         </p>
       </section>

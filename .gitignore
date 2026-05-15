@@ -56,3 +56,7 @@ next-env.d.ts
 # Entire `projects/` tree — local special-project exports, scripts, and paths (not for public clone).
 /projects/**
 !/projects/.gitkeep
+
+# Repo-root `users/` — local Fleet user exports and tokens (not `app/users` routes).
+/users/**
+!/users/.gitkeep
