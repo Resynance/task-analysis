@@ -26,8 +26,12 @@ export type FeedbackCsvRow = {
   dispute_resolved_at?: string | null;
 };
 
+const SAMPLES_DIR = "samples";
+
 /**
- * Top-level `feedback/*.csv` plus one nested level `feedback/<project>/*.csv`.
+ * `feedback/samples/*.csv` (safe fixtures for clones) plus one nested level
+ * `feedback/<project>/*.csv`. Top-level `feedback/*.csv` is intentionally not
+ * listed here so real exports stay local-only (see `.gitignore`).
  */
 export function listFeedbackCsvFiles(): string[] {
   const dir = path.join(process.cwd(), "feedback");
@@ -37,10 +41,22 @@ export function listFeedbackCsvFiles(): string[] {
   for (const e of entries) {
     const full = path.join(dir, e.name);
     if (e.isFile() && e.name.toLowerCase().endsWith(".csv")) {
-      out.push(full);
       continue;
     }
     if (!e.isDirectory()) continue;
+    if (e.name === SAMPLES_DIR) {
+      let sampleEntries;
+      try {
+        sampleEntries = readdirSync(full, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+      for (const se of sampleEntries) {
+        if (!se.isFile() || !se.name.toLowerCase().endsWith(".csv")) continue;
+        out.push(path.join(full, se.name));
+      }
+      continue;
+    }
     let subEntries;
     try {
       subEntries = readdirSync(full, { withFileTypes: true });
@@ -59,7 +75,7 @@ export function listFeedbackCsvFiles(): string[] {
 /**
  * Project slug always comes from the **filesystem** (not CSV rows):
  * - `feedback/<project>/<env>.csv` → project = folder name, env = file basename
- * - `feedback/<name>.csv` (top-level) → project = file basename (same as prompts top-level files)
+ * - `feedback/samples/<name>.csv` → project = `samples`, env = file basename
  */
 export function projectAndEnvFromFeedbackCsvPath(filePath: string): {
   projectKey: string;

@@ -64,7 +64,8 @@ export async function ingestFeedbackFromFeedbackDirectory(
       synced: 0,
       skipped: 0,
       duplicatesDropped: 0,
-      message: "No .csv files found in feedback/ at the project root.",
+      message:
+        "No feedback CSVs found. Add `feedback/samples/*.csv` (tracked fixtures) or `feedback/<project>/*.csv` (local exports; not committed — see `.gitignore`).",
     };
   }
 

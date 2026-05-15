@@ -54,9 +54,9 @@ export default function IngestDataPage() {
         <p className="mt-3 text-zinc-400">
           Import prompt JSON or CSV exports from <code>Prompts/</code> or{" "}
           <code>prompts/</code> (each top-level file or nested folder is a project), and QA feedback CSV files
-          from <code>feedback/</code>: either <code>feedback/*.csv</code> (legacy,
-          no project) or <code>feedback/&lt;project&gt;/&lt;environment&gt;.csv</code>{" "}
-          so feedback lines up with prompt projects and evaluation environments.
+          under <code>feedback/samples/</code> (small fixtures in git) or{" "}
+          <code>feedback/&lt;project&gt;/&lt;environment&gt;.csv</code> (local exports only, not
+          committed) so feedback lines up with prompt projects and evaluation environments.
         </p>
       </header>
 

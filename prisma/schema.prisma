@@ -190,7 +190,7 @@ model Feedback {
   sourceFeedbackId String      @unique
   taskId           String?
   taskKey          String?
-  /// Folder slug when CSV lives under `feedback/<project>/`; empty for top-level `feedback/*.csv`.
+  /// Folder slug from `feedback/<project>/…` or `feedback/samples/…` (see feedback-csv.ts).
   projectKey       String   @default("")
   envKey           String?
   createdById      String?

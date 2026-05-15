@@ -539,7 +539,8 @@ export function FeedbackDashboard(props: {
         <p className="mt-3 text-zinc-400">
           Analyze QA reviewer feedback quality against a selected guideline set.
           Scope matches prompts: choose a <strong className="font-medium text-zinc-300">project</strong>{" "}
-          (CSV folder under <code className="text-zinc-500">feedback/</code>) and an{" "}
+          (folder under <code className="text-zinc-500">feedback/</code>, e.g.{" "}
+          <code className="text-zinc-500">samples</code> or a project subfolder) and an{" "}
           <strong className="font-medium text-zinc-300">evaluation environment</strong> (CSV filename /
           <code className="text-zinc-500">env_key</code>).
         </p>

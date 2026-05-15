@@ -65,3 +65,8 @@ next-env.d.ts
 # Repo-root `users/` — local user exports and tokens (not `app/users` routes).
 /users/**
 !/users/.gitkeep
+
+# Feedback CSV exports contain PII; keep only `feedback/samples/` in git.
+/feedback/**/*.csv
+!/feedback/samples/
+!/feedback/samples/*.csv
