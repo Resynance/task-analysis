@@ -13,11 +13,11 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "check:push-data": "node scripts/check-push-data.mjs",
+    "check:push-data": "node tooling/check-push-data.mjs",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
-    "db:import": "npx tsx scripts/import-dataset.ts"
+    "db:import": "npx tsx tooling/import-dataset.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",

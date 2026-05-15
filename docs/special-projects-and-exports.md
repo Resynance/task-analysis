@@ -12,9 +12,17 @@ Display titles for this area are configurable via **`NEXT_PUBLIC_*`** environmen
 
 **Paths:** `lib/openclaw-trace-exports.ts` centralizes repo-relative directories. Stream types: `lib/openclaw-export-stream.ts`, `lib/openclaw-analysis-stream.ts`. Audit file I/O: `lib/openclaw-audit-report-read.ts`.
 
+**Workflow audit narrative (`reports/task_*.md`):** Each report is produced by your local **`audit_trace_workflow_steps.py`** (next to the exporters under `trace-exports/`) from the task workflow JSON plus an LLM pass. The script sends each step as an **invocation line** (tool, status, `parameters_json` — e.g. the shell `command`) plus the exported output block, and applies an **attempted-read** rule: a successful `cat` / `read_file` / … on a required path counts for **source coverage** even when `resolved_result_text` is empty, ref-only (`$NN`), or RSC/HTML noise.
+
+**Export fidelity (still worth fixing):** Inlined file bodies in `resolved_result_text` make human review easier; improving **export / dereference** in `export_openclaw_task_workflow_steps.py` remains valuable independent of audit verdicts.
+
+**Path / ordering caveats:** The model can still err when paths differ slightly (`./` vs absolute). **Ground truth** for “was the command run?” is `parameters_json` + tool name + status; output text is supplementary when present.
+
+**This app** only **parses** saved `task_*.md` (e.g. `## Verdict`) via `lib/openclaw-audit-report-read.ts`; it does not re-score traces.
+
 **Saved worlds:** `OpenclawWorld` in Prisma stores named persona/world text used as optional context for audits and pre-check (`prisma/schema.prisma`).
 
-**Do not commit** large secrets, HAR files, or private exports; see [Configuration & data](./configuration-and-data.md) and `npm run check:push-data`.
+**Do not commit** large secrets, HAR files, or private exports; see [Configuration & data](./configuration-and-data.md) and `npm run check:push-data` (`tooling/check-push-data.mjs`).
 
 ### Writer draft pre-check (`/special-projects/openclaw/writer-precheck`)
 

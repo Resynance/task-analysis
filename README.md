@@ -32,7 +32,7 @@ Open [http://127.0.0.1:3000](http://127.0.0.1:3000) (dev server listens on loopb
 | `npm run lint` | ESLint |
 | `npm run test:run` | Vitest (non-watch) |
 | `npm run test:coverage` | Vitest with coverage |
-| `npm run check:push-data` | Block accidental commit of sensitive paths (see `scripts/check-push-data.mjs`) |
+| `npm run check:push-data` | Block accidental commit of sensitive paths (see `tooling/check-push-data.mjs`) |
 
 ## Learn more (framework)
 

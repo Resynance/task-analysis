@@ -95,7 +95,7 @@ Header badges (`components/llm-status-badge.tsx`, `components/openrouter-credits
 ## Public repository hygiene
 
 - **`projects/`** — The whole directory is **gitignored** (except `projects/.gitkeep` so the folder exists in a fresh clone). Put trace-export scripts, transcripts, audits, and any paths that must not appear in a public repo **only** under `projects/` locally. If anything under `projects/` was committed before this policy, run `git rm -r --cached projects/` (keeping `.gitkeep` if you re-add it), then commit.
-- **`npm run check:push-data`** — `scripts/check-push-data.mjs` fails if any path under `projects/` is tracked, plus other deny rules (datasets, build dirs, etc.). It also treats paths under custom **`TASK_ANALYSIS_*`** roots from `.env` like tracked secrets if those roots sit outside `projects/`.
+- **`npm run check:push-data`** — `tooling/check-push-data.mjs` fails if any path under `projects/` is tracked, plus other deny rules (datasets, build dirs, etc.). It also treats paths under custom **`TASK_ANALYSIS_*`** roots from `.env` like tracked secrets if those roots sit outside `projects/`.
 - **Sample / export JSON** elsewhere may still contain realistic-looking fixture text. For a public repo, prefer synthetic fixtures or truncated samples.
 - If you set **`TASK_ANALYSIS_TRACE_EXPORTS_DIR`** or **`TASK_ANALYSIS_PM_FAILURE_DIR`** to directories **outside** `projects/`, add matching `.gitignore` rules for those folders so local data is not pushed by mistake.
 

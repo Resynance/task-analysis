@@ -287,8 +287,8 @@ export default async function RecentOnboardsReportPage({
       {!metrics.fileExists ? (
         <section className="report-section rounded-2xl border border-zinc-800 bg-zinc-950/35 p-6">
           <p className="text-zinc-500">
-            Could not find <code>users/users_recent_joins.json</code>. Run{" "}
-            <code>scripts/user_export/fetch_all_users.py --recent-joins</code> first.
+            Could not find <code>users/users_recent_joins.json</code>. Add it under the repo-root{" "}
+            <code>users/</code> folder (see configuration docs; user-export tooling is local-only).
           </p>
         </section>
       ) : users.length === 0 ? (
