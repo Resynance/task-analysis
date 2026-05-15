@@ -30,7 +30,7 @@ From the repo root:
 | `npm run lint` | ESLint (`eslint.config.mjs`; `projects/**` is ignored). |
 | `npm run test:coverage` | Vitest with coverage thresholds (requires `vitest.sqlite` schema — see above). |
 | `npm run build` | Production Next.js build + TypeScript check. |
-| `npm run test:e2e` | Playwright smoke tests (Chromium). First time: `npx playwright install chromium`. Requires DB schema on the URL used by the dev server (defaults to `vitest.sqlite` in `playwright.config.ts` if `DATABASE_URL` is unset). |
+| `npm run test:e2e` | Playwright smoke tests (Chromium). First time: `npx playwright install chromium`. Requires DB schema on the URL used by the dev server (defaults to `vitest.sqlite` in `playwright.config.mjs` if `DATABASE_URL` is unset). |
 
 ## Dev server bind address
 
